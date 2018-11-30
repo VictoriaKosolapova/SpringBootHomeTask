@@ -1,16 +1,43 @@
 package com.netcracker.edu.db.employee.dao;
 
 import com.netcracker.edu.db.employee.model.Employee;
-import org.springframework.stereotype.Repository;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.sql.DataSource;
+import java.math.BigInteger;
 import java.util.List;
 
-@Repository
+/**
+ * TODO: Implement me using Spring jdbc
+ */
 public class EmployeeDaoJdbcImpl implements EmployeeDao {
 
+    private final JdbcTemplate jdbcTemplate;
+
+    public EmployeeDaoJdbcImpl(String url, String username, String password) {
+        DataSource dataSource = createDataSource(url, username, password);
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
     @Override
-    public Employee getEmployeeById(long employeeId) {
+    public Employee getEmployeeById(BigInteger employeeId) {
         return null;
+    }
+
+    @Override
+    public boolean addEmployee(Employee employee) {
+        return false;
+    }
+
+    @Override
+    public boolean updateEmployee(Employee employee) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteEmployee(Employee employee) {
+        return false;
     }
 
     @Override
@@ -24,12 +51,21 @@ public class EmployeeDaoJdbcImpl implements EmployeeDao {
     }
 
     @Override
-    public List<Employee> getEmployeeWithGreaterSalary(long thresholdSalary) {
+    public List<Employee> getEmployeesWithGreaterSalary(long thresholdSalary) {
         return null;
     }
 
     @Override
     public List<Employee> getAllEmployees() {
         return null;
+    }
+
+    private DataSource createDataSource(String url, String username, String password) {
+        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.url(url);
+        dataSourceBuilder.username(username);
+        dataSourceBuilder.password(password);
+
+        return dataSourceBuilder.build();
     }
 }
