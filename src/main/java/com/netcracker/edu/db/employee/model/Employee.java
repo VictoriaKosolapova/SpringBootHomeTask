@@ -1,5 +1,9 @@
 package com.netcracker.edu.db.employee.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,9 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigInteger;
 
-/**
- * TODO: Add needed getters, setters, JPA annotations and so on
- */
+@Data // getters setters toString hashCode equals generation
+@NoArgsConstructor // constructor for JPA requirements
+@AllArgsConstructor // constructor for creating employee in line
+
 @Entity
 @Table(name = "employee")
 public class Employee {
@@ -28,57 +33,9 @@ public class Employee {
     @Column(name = "position")
     private String position;
 
-    @Column(name = "departmentId")
+    @Column(name = "department_id")
     private long departmentId;
 
     @Column(name = "salary")
     private long salary;
-
-    public BigInteger getId() {
-        return id;
-    }
-
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public long getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(long departmentId) {
-        this.departmentId = departmentId;
-    }
-
-    public long getSalary() {
-        return salary;
-    }
-
-    public void setSalary(long salary) {
-        this.salary = salary;
-    }
 }
