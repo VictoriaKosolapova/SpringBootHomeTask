@@ -9,7 +9,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TODO: Implement me using Hibernate
+ * TODO: Implement me
  */
 @Repository
 public class EmployeeDaoJpaImpl implements EmployeeDao {
