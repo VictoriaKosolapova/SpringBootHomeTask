@@ -34,16 +34,10 @@ public class EmployeeDaoJpaImpl implements EmployeeDao {
 
     @Override
     public boolean updateEmployee(Employee employee) {
-        Employee updatedEmployee = entityManager.find(Employee.class, employee.getId());
         if(entityManager.find(Employee.class, employee.getId()) == null)
             return false;
         else {
-            updatedEmployee.setName(employee.getName());
-            updatedEmployee.setSurname(employee.getSurname());
-            updatedEmployee.setSalary(employee.getSalary());
-            updatedEmployee.setPosition(employee.getPosition());
-            updatedEmployee.setDepartmentId(employee.getDepartmentId());
-            entityManager.flush();
+            entityManager.merge(employee);
             return true;
         }
     }
