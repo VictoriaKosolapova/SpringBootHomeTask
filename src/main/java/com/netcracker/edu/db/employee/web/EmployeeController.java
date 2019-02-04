@@ -2,9 +2,20 @@ package com.netcracker.edu.db.employee.web;
 
 import com.netcracker.edu.db.employee.model.Employee;
 import com.netcracker.edu.db.employee.service.EmployeeService;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.math.BigInteger;
@@ -32,14 +43,25 @@ public class EmployeeController {
     }
 
     @DeleteMapping
-    public boolean deleteEmployee(@RequestBody Employee employee){
-        return employeeService.deleteEmployee(employee);
+    public ResponseEntity deleteEmployee(@RequestBody Employee employee){
+        try{
+            return new ResponseEntity(employeeService.deleteEmployee(employee), HttpStatus.OK);
+        }
+        catch (ResourceNotFoundException ex){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"employee "+employee.getId()+" not found",ex);
+        }
+
     }
 
     @PutMapping("/swapEmployeesPositionsAndSalaries")
     public boolean swapEmployeesPositionsAndSalaries(@RequestParam(value = "promotedId",required = true) BigInteger promotedId,
                                                      @RequestParam(value = "demotedId",required = true) BigInteger demotedId){
-        return employeeService.swapEmployeesPositionsAndSalaries(promotedId,demotedId);
+        try{
+            return employeeService.swapEmployeesPositionsAndSalaries(promotedId,demotedId);
+        }
+        catch (ResourceNotFoundException ex){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,ex.getMessage(),ex);
+        }
     }
 
     @GetMapping

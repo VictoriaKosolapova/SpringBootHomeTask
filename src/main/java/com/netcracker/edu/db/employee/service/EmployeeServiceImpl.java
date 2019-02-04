@@ -2,6 +2,7 @@ package com.netcracker.edu.db.employee.service;
 
 import com.netcracker.edu.db.employee.dao.EmployeeDao;
 import com.netcracker.edu.db.employee.model.Employee;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.List;
+
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -38,7 +40,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public boolean deleteEmployee(Employee employee) {
-        return employeeDao.deleteEmployee(employee);
+        if(employeeDao.getEmployeeById(employee.getId()) == null){
+            throw new ResourceNotFoundException("employee "+employee.getId()+" not found");
+        }
+        else return employeeDao.deleteEmployee(employee);
     }
 
     @Override
@@ -47,17 +52,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employeePromoted = employeeDao.getEmployeeById(promotedId);
         Employee employeeDemoted = employeeDao.getEmployeeById(demotedId);
 
-        long salaryExchange = employeeDao.getEmployeeById(promotedId).getSalary();
-        String positionExchange = employeeDao.getEmployeeById(promotedId).getPosition();
+        if(employeePromoted == null){
+            throw new ResourceNotFoundException("employee "+promotedId+" not found");
+        }
+        if(employeeDemoted == null){
+            throw new ResourceNotFoundException("employee "+demotedId+" not found");
+        }
 
-        employeePromoted.setPosition(employeeDao.getEmployeeById(demotedId).getPosition());
-        employeeDemoted.setPosition(positionExchange);
+            long salaryExchange = employeeDao.getEmployeeById(promotedId).getSalary();
+            String positionExchange = employeeDao.getEmployeeById(promotedId).getPosition();
 
-        employeePromoted.setSalary(employeeDao.getEmployeeById(demotedId).getSalary());
-        employeeDemoted.setSalary(salaryExchange);
+            employeePromoted.setPosition(employeeDao.getEmployeeById(demotedId).getPosition());
+            employeeDemoted.setPosition(positionExchange);
 
-        return  employeeDao.updateEmployee(employeePromoted)&&
-        employeeDao.updateEmployee(employeeDemoted);
+            employeePromoted.setSalary(employeeDao.getEmployeeById(demotedId).getSalary());
+            employeeDemoted.setSalary(salaryExchange);
+            return employeeDao.updateEmployee(employeePromoted)
+                    && employeeDao.updateEmployee(employeeDemoted);
     }
 
     @Override
